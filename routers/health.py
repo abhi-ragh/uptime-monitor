@@ -41,14 +41,9 @@ async def health(url : HttpUrl):
     headers = {
     "User-Agent": "UptimeMonitor/1.0"
     }
-    
-    timeout = httpx.Timeout(
-    connect=3.0,
-    read=5.0
-    )
 
     try:
-        async with httpx.AsyncClient(timeout=timeout) as client:
+        async with httpx.AsyncClient(timeout=httpx.Timeout(5.0)) as client:
             response = await client.get(url, headers=headers, follow_redirects=False)
         duration = (time.perf_counter() - start) * 1000
         
