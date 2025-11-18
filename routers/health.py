@@ -31,6 +31,7 @@ router = APIRouter()
 
 @router.get("/healthcheck")
 async def health(url : HttpUrl):
+    url = str(url)
     parsed = urlparse(url)
     hostname = parsed.hostname
     port = parsed.port
