@@ -33,7 +33,7 @@ async def health(url : str):
     parsed = urlparse(url)
     hostname = parsed.hostname
     port = parsed.port
-    expiry = get_ssl_expiry(url,port)
+    expiry = get_ssl_expiry(hostname,port)
 
     start = time.perf_counter()
     try:
