@@ -37,9 +37,14 @@ async def health(url : HttpUrl):
     port = parsed.port
 
     start = time.perf_counter()
+
+    headers = {
+    "User-Agent": "UptimeMonitor/1.0"
+    }
+    
     try:
         async with httpx.AsyncClient(timeout=5.0) as client:
-            response = await client.get(url)
+            response = await client.get(url, headers=headers)
         duration = (time.perf_counter() - start) * 1000
         
         if response.status_code >= 200 < 300:
