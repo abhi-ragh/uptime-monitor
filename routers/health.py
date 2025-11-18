@@ -33,7 +33,8 @@ async def health(url : str):
     parsed = urlparse(url)
     hostname = parsed.hostname
     port = parsed.port
-    
+    expiry = get_ssl_expiry(url,port)
+
     start = time.perf_counter()
     try:
         async with httpx.AsyncClient(timeout=5.0) as client:
@@ -46,7 +47,7 @@ async def health(url : str):
             "status_code": response.status_code,
             "response-time": f"{round(duration,2)} ms",
             "redirects": len(response.history),
-            "SSL Expiry": get_ssl_expiry(url,port)
+            "SSL Expiry": expiry
         }
     except httpx.ConnectTimeout:
         return {
