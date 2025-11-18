@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+from pydantic import HttpUrl
 import httpx,time
 
 import contextlib
@@ -29,7 +30,7 @@ def get_ssl_expiry(hostname: str, port: int = 443):
 router = APIRouter()
 
 @router.get("/healthcheck")
-async def health(url : str):
+async def health(url : HttpUrl):
     parsed = urlparse(url)
     hostname = parsed.hostname
     port = parsed.port
