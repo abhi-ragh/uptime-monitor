@@ -41,11 +41,21 @@ async def health(url : HttpUrl):
         async with httpx.AsyncClient(timeout=5.0) as client:
             response = await client.get(url)
         duration = (time.perf_counter() - start) * 1000
-
+        
+        if response.status_code < 200:
+            category = "Success"
+        elif response.status_code < 300:
+            category = "Redirection"
+        elif response.status_code < 400:
+            category = "Client Error"
+        else:
+            category = "Server Error"   
+        
         return {
             "url": url,
             "status": "up" if response.status_code < 500 else "down",
             "status_code": response.status_code,
+            "status_category": category,
             "response-time": f"{round(duration,2)} ms",
             "redirects": len(response.history),
             "Content Length (in Bytes)": len(response.content),
