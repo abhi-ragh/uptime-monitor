@@ -44,7 +44,7 @@ async def health(url : HttpUrl):
     
     try:
         async with httpx.AsyncClient(timeout=5.0) as client:
-            response = await client.get(url, headers=headers)
+            response = await client.get(url, headers=headers, follow_redirects=False)
         duration = (time.perf_counter() - start) * 1000
         
         if response.status_code >= 200 < 300:
