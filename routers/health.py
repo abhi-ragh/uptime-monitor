@@ -42,11 +42,11 @@ async def health(url : HttpUrl):
             response = await client.get(url)
         duration = (time.perf_counter() - start) * 1000
         
-        if response.status_code < 200:
+        if response.status_code >= 200 < 300:
             category = "Success"
-        elif response.status_code < 300:
+        elif response.status_code >= 300 < 400:
             category = "Redirection"
-        elif response.status_code < 400:
+        elif response.status_code >= 400 < 500:
             category = "Client Error"
         else:
             category = "Server Error"   
