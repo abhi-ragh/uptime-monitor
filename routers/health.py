@@ -94,3 +94,21 @@ async def health(url : HttpUrl):
             "status":"down",
             "error":str(e)
         }
+
+@router.get("/ip")
+async def get_ip(url: HttpUrl):
+    try:
+        hostname = urlparse(str(url)).hostname
+        ip_address = socket.gethostbyname(hostname)
+        return {"ip_address": ip_address}
+    except socket.gaierror:
+        return {"error": "Could not resolve hostname"}
+
+@router.get("/headers")
+async def get_headers(url: HttpUrl):
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.get(str(url))
+            return {"headers": dict(response.headers)}
+    except httpx.RequestError as e:
+        return {"error": str(e)}
