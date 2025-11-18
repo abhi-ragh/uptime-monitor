@@ -2,7 +2,7 @@ from fastapi import APIRouter
 import httpx,time
 
 import contextlib
-from datetime import datetime
+from datetime import datetime, timezone
 import socket 
 import ssl
 
@@ -19,7 +19,7 @@ def get_ssl_expiry(hostname: str, port: int = 443):
                 expiry_str = cert["notAfter"]
                 expiry_date = datetime.strptime(expiry_str, "%b %d %H:%M:%S %Y %Z")
 
-        days_left = (expiry_date - datetime.utcnow()).days
+        days_left = (expiry_date - datetime.datetime.now(timezone.utc)()).days
         return days_left
 
     except Exception:
