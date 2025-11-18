@@ -30,24 +30,23 @@ router = APIRouter()
 
 @router.get("/healthcheck")
 async def health(url : str):
+    parsed = urlparse(url)
+    hostname = parsed.hostname
+    port = parsed.port
+    
     start = time.perf_counter()
     try:
         async with httpx.AsyncClient(timeout=5.0) as client:
             response = await client.get(url)
         duration = (time.perf_counter() - start) * 1000
 
-        parsed = urlparse(url)
-        hostname = parsed.hostname
-        port = parsed.port
-
-        expiry_date = get_ssl_expiry(url,port)
         return {
             "url": url,
             "status": "up" if response.status_code < 500 else "down",
             "status_code": response.status_code,
             "response-time": f"{round(duration,2)} ms",
             "redirects": len(response.history),
-            "SSL Expiry": expiry_date
+            "SSL Expiry": get_ssl_expiry(url,port)
         }
     except httpx.ConnectTimeout:
         return {
