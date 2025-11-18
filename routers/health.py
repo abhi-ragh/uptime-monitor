@@ -42,8 +42,13 @@ async def health(url : HttpUrl):
     "User-Agent": "UptimeMonitor/1.0"
     }
     
+    timeout = httpx.Timeout(
+    connect=3.0,
+    read=5.0
+    )
+
     try:
-        async with httpx.AsyncClient(timeout=5.0) as client:
+        async with httpx.AsyncClient(timeout=timeout) as client:
             response = await client.get(url, headers=headers, follow_redirects=False)
         duration = (time.perf_counter() - start) * 1000
         
@@ -64,6 +69,7 @@ async def health(url : HttpUrl):
             "response-time": f"{round(duration,2)} ms",
             "redirects": len(response.history),
             "Content Length (in Bytes)": len(response.content),
+            "redirect_to": response.headers.get("Location"),
             "SSL Expiry": get_ssl_expiry(hostname,port)
         }
     except httpx.ConnectTimeout:
