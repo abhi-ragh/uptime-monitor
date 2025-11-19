@@ -46,3 +46,14 @@ def create_task(task: str):
     return{
         "Status":"Task Created"
     }
+
+@todo.patch("/")
+def update_task(id: int, status: str):
+    conn = get_conn()
+    cursor = conn.cursor()
+    cursor.execute("UPDATE tasks SET status=? WHERE id=?",(status,id))
+    conn.commit()
+    conn.close()
+    return {
+        "Status":"Task Updated"
+    }
